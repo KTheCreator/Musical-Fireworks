@@ -2,24 +2,34 @@
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Numerics;
 using DSPLib;
-
+using UnityEngine.VFX;
 using Array = System.Array;
 public class SongController : MonoBehaviour
 {
     int numChannels, numTotalSamples, sampleRate;
     float clipLength;
     float[] multiChannelSamples;
-    AudioPreprocessor audPP;
+    public AudioPreprocessor audPP;
     AudioSource aSource;
     PlotController pController;
-    // Start is called before the first frame update
-    void Start()
+	[Space]
+	public Text timeText;
+	[Space]
+	bool startSong = false;
+	public int currPoint;
+	[SerializeField]
+	private VisualEffect fireworkFX;
+	public List<float> times;
+	// Start is called before the first frame update
+	void Start()
     {
+		currPoint = 0;
         aSource = GetComponent<AudioSource>();
         audPP = new AudioPreprocessor();
-        pController = GameObject.Find("PlotMachine").GetComponent<PlotController>();
+        //pController = GameObject.Find("PlotMachine").GetComponent<PlotController>();
         multiChannelSamples = new float[aSource.clip.samples * aSource.clip.channels];
         numChannels = aSource.clip.channels;
         numTotalSamples = aSource.clip.samples;
@@ -29,15 +39,57 @@ public class SongController : MonoBehaviour
 		Debug.Log("GetData: Complete");
         Thread bgThread = new Thread(this.getFullSpectrumThreaded);
 		bgThread.Start();
-    }
+		//Debug.Log("Number of Points: " + audPP.spectralFluxSamples.Count);
+	}
 
     // Update is called once per frame
     void Update()
     {
-        int indexToPlot = getIndexFromTime(aSource.time) / 1024;
-        pController.updatePlot(audPP.spectralFluxSamples, indexToPlot);
+        //int indexToPlot = getIndexFromTime(aSource.time) / 1024;
+        //pController.updatePlot(audPP.spectralFluxSamples, indexToPlot);
 
-    }
+		//audPP.logSample(1);
+		string timeFormat = string.Format("Time: {0}", aSource.time);
+		timeText.text = timeFormat;
+
+		if (!startSong)
+			aSource.Stop();
+		else if(startSong && !aSource.isPlaying)
+			aSource.Play();
+
+		/*if (aSource.isPlaying)
+        {
+			if (audPP.spectralFluxSamples[currPoint].time < 1)
+			{
+				currPoint++;
+			}
+			else if (audPP.spectralFluxSamples[currPoint].time - aSource.time == 1)
+			{
+				Debug.Log("Incoming fire!!");
+				fireworkFX.SendEvent("FireMain");
+				currPoint++;
+			}
+			
+        }*/
+		if (aSource.isPlaying)
+		{
+			
+			if (times[currPoint] - aSource.time <= .5f)
+			{
+				fireworkFX.SendEvent("FireMain");
+				currPoint++;
+				//Debug.Log("Need to fire at: " + audPP.spectralFluxSamples[currPoint].time);
+				//currPoint++;
+			}
+		}
+		int indexTime = getIndexFromTime(aSource.time);
+		Debug.Log("Index: "+indexTime);
+		if (Input.GetKeyDown(KeyCode.Space))
+		{
+			fireworkFX.SendEvent("FireMain");
+			//fireworkFX.SendEvent("fireStop");
+		}
+	}
     public int getIndexFromTime(float curTime)
     {
         float lengthPerSample = this.clipLength / (float)this.numTotalSamples;
@@ -108,6 +160,18 @@ public class SongController : MonoBehaviour
 
 			Debug.Log("Spectrum Analysis done");
 			Debug.Log("Background Thread Completed");
+			Debug.Log("Number of Points: " + audPP.spectralFluxSamples.Count);
+			for(int i =0; i < audPP.spectralFluxSamples.Count; i++)
+            {
+				
+				if (audPP.spectralFluxSamples[i].time < 2)
+					continue;
+				if (i % 20 == 0)
+				{
+					times.Add(audPP.spectralFluxSamples[i].time);
+				}
+            }
+			startSong = true;
 
 		}
 		catch (System.Exception e)

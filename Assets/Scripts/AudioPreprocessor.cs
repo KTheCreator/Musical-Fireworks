@@ -85,7 +85,7 @@ public class AudioPreprocessor
 
     }
 
-    void logSample(int indexToLog)
+    public void logSample(int indexToLog)
     {
         int windowStart = Mathf.Max(0, indexToLog - thresholdWindowSize / 2);
         int windowEnd = Mathf.Min(spectralFluxSamples.Count - 1, indexToLog + thresholdWindowSize / 2);
