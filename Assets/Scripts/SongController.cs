@@ -6,7 +6,9 @@ using UnityEngine.UI;
 using System.Numerics;
 using DSPLib;
 using UnityEngine.VFX;
+using System.IO;
 using Array = System.Array;
+using UnityEngine.Networking;
 public class SongController : MonoBehaviour
 {
     int numChannels, numTotalSamples, sampleRate;
@@ -28,9 +30,10 @@ public class SongController : MonoBehaviour
     {
 		currPoint = 0;
         aSource = GetComponent<AudioSource>();
+		
+		//LoadAudio();
         audPP = new AudioPreprocessor();
-        //pController = GameObject.Find("PlotMachine").GetComponent<PlotController>();
-        multiChannelSamples = new float[aSource.clip.samples * aSource.clip.channels];
+         multiChannelSamples = new float[aSource.clip.samples * aSource.clip.channels];
         numChannels = aSource.clip.channels;
         numTotalSamples = aSource.clip.samples;
         clipLength = aSource.clip.length;
@@ -180,4 +183,25 @@ public class SongController : MonoBehaviour
 			Debug.Log(e.ToString());
 		}
 	}
+
+	//This function will load the song that the user has chosen
+	
+
+	/*private IEnumerator LoadAudio()
+    {
+		using (UnityWebRequest audioFile = UnityWebRequestMultimedia.GetAudioClip(songSelection.pickedSong.FullName, AudioType.MPEG))
+        {
+			yield return audioFile.SendWebRequest();
+			if(audioFile.result == UnityWebRequest.Result.DataProcessingError)
+            {
+				Debug.Log(audioFile.error);
+            }
+            else
+            {
+				aSource.clip = DownloadHandlerAudioClip.GetContent(audioFile);
+            }
+        }
+		
+    }*/
+
 }

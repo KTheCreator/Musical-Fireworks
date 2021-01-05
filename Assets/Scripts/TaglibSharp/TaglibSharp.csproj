@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(LibTargetFrameworks)</TargetFrameworks>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\TaglibSharp.xml</DocumentationFile>
+    <AssemblyName>TagLibSharp</AssemblyName>
+    <RootNamespace>TagLib</RootNamespace>
+    <AssemblyOriginatorKeyFile>..\..\taglib-sharp.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>$(ReleaseVersion)</Version>
+    <PackageId>TagLibSharp</PackageId>
+    <Product>TagLib#</Product>
+    <Description>A library for for reading and writing metadata in media files, including video, audio, and photo formats.</Description>
+    <Copyright>Copyright (c) 2006-2007 Brian Nickel.  Copyright (c) 2009-2020 Other contributors</Copyright>
+    <Authors>Brian Nickel, Gabriel Burt, Stephen Shaw, etc</Authors>
+    <PackageProjectUrl>https://github.com/mono/taglib-sharp</PackageProjectUrl>
+    <PackageLicenseExpression>LGPL-2.1-only</PackageLicenseExpression>
+    <PackageReleaseNotes>Version $(ReleaseVersion)
+July 22, 2019
+* Remove autotools and friends. Simply code base.
+* Include a few fixes from lidarr Project
+
+January 21, 2019
+* Lots and lots of updates including net45 and .netstandard 2.0</PackageReleaseNotes>
+  </PropertyGroup>
+
+</Project>
